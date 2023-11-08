@@ -22,6 +22,7 @@ function saveUser(event) {
         })
     };
 
+   
 
 function loginHandler(event) {
     event.preventDefault();
@@ -30,5 +31,18 @@ function loginHandler(event) {
     const password = event.target.password.value;
     
     axios.post("http://localhost:4000/login", {email, password})
+    .then((response) => {
+        if(response.status === 201){
+            console.log(response);
+            alert('Login successfull');
+        }
+        else if(response.status === 401){
+            alert('Incorrect password');
+        }
+        else{
+            alert('User dont exist please signup');
+        }
+    })
+    .catch(err => console.log(err));
 
 }
