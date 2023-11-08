@@ -29,7 +29,7 @@
     <div class="container mt-4">
         <div class="signup-form">
             <h2 class="text-center">Signup</h2>
-            <form action="/register" method="post">
+            <form action="/register" method="post" onsubmit="saveUser(event)">
                 <div class="form-group">
                     <label for="name">Name:</label>
                     <input type="text" class="form-control" id="name" name="name" required>
@@ -47,12 +47,17 @@
                     <label for="password">Password:</label>
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
-                <button type="submit" class="btn btn-primary mt-2">Submit</button>
+                <button type="submit" class="btn btn-primary mt-2" >Submit</button>
+                <div  id="messageBox" style="color: red;"></div>
+
             </form>
             <a href="http://localhost:4000/login">Already user? Login Now</a>
         </div>
 
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"></script>
+    <script src="/javascript/user.js"></script>
 
 </body>
 
