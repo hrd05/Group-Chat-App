@@ -1,6 +1,11 @@
 const bcrypt = require('bcrypt');
+const path = require('path');
+
 const User = require('../models/user');
 
+exports.getLogin = (req, res) => {
+    res.sendFile(path.join(__dirname, '../', 'views', 'login.html'));
+}
 
 exports.postUser = (req, res) => {
     const name = req.body.name;

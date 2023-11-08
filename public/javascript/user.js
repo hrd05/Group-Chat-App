@@ -22,3 +22,13 @@ function saveUser(event) {
         })
     };
 
+
+function loginHandler(event) {
+    event.preventDefault();
+
+    const email = event.target.email.value;
+    const password = event.target.password.value;
+    
+    axios.post("http://localhost:4000/login", {email, password})
+
+}
