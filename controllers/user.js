@@ -23,7 +23,7 @@ exports.postUser = (req, res) => {
                 bcrypt.hash(password, 10, (err, hash) => {
                     User.create({ name, email, phoneNo, password: hash })
                         .then(() => {
-                            res.status(201).json({ message: 'User signup successfull' });
+                            res.redirect('/login');
 
                         })
                         .catch(err => {
@@ -35,19 +35,20 @@ exports.postUser = (req, res) => {
 };
 
 function generateAcessToken(id) {
-    console.log(process.env.DB_NAME,process.env.JWT_SECRET_KEY);
-    return jwt.sign({userId: id}, process.env.JWT_SECRET_KEY);
+    return jwt.sign({ userId: id }, process.env.JWT_SECRET_KEY);
 }
 
 
 exports.postLogin = async (req, res) => {
-    console.log('in the post ');
     const email = req.body.email;
     const password = req.body.password;
 
     try {
         const user = await User.findOne({ where: { email: email } });
         const result = await bcrypt.compare(password, user.password);
+        if (!user) {
+            res.status(404).json({ message: 'user not found' });
+        }
 
         if (result) {
             res.status(201).json({ message: 'login successfull', token: generateAcessToken(user.id) });
@@ -57,7 +58,7 @@ exports.postLogin = async (req, res) => {
         }
     } catch (err) {
         console.log(err);
-        res.status(403).json({ message: 'something went wrong' });
+        res.status(403).json({ message: 'something went wrong'});
     }
 
 }

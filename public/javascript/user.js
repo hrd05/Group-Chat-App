@@ -35,14 +35,19 @@ function loginHandler(event) {
         if(response.status === 201){
             console.log(response);
             alert('Login successfull');
-        }
-        else if(response.status === 401){
-            alert('Incorrect password');
-        }
-        else{
-            alert('User dont exist please signup');
+            localStorage.setItem('token', response.data.token);
+            // window.location.href = '/chat'
         }
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+        console.log(err);
+        const msg = document.getElementById('msg');
+        if(err.response.status === 401){
+            msg.textContent = `${err.response.data.message}`;
+        }
+        else{
+            msg.textContent = `User not found`;
+        }
+    });
 
 }

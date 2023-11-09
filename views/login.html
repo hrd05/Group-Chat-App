@@ -4,21 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-
     <title>Login</title>
     <!-- Include Bootstrap CSS and JavaScript -->
-    <!-- <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://cdn.jsdelivr.net;"> -->
-    <!-- <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com"> -->
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
         integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-
     <style>
         /* Custom styling for the form */
-        .signup-form {
+        body {
+            background-color: #007BFF;
+            /* padding: 0px; */
+            margin-top: 50px;
+
+        }
+
+        .login-form {
             max-width: 400px;
+            height: 400px;
             margin: 0 auto;
             padding: 20px;
             border: 1px solid #ccc;
@@ -27,10 +28,9 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
 
-        .signup-form h2 {
+        .login-form h2 {
             text-align: center;
         }
-
 
         .form-control {
             border: 1px solid #ccc;
@@ -39,24 +39,33 @@
 
         .btn-primary {
             background-color: #007BFF;
+            width: 100%;
             border: none;
+            border-radius: 5px;
+
         }
 
         .btn-primary:hover {
             background-color: #0056b3;
+            cursor: pointer;
         }
 
         .signup-link {
             display: block;
+            color: #f9f9f9;
             text-align: center;
             margin-top: 10px;
+        }
+
+        .signup-link:hover {
+            color: #FDF5E6;
         }
     </style>
 </head>
 
 <body>
     <div class="container mt-4">
-        <div class="signup-form">
+        <div class="login-form">
             <h2>Login</h2>
             <form onsubmit="loginHandler(event)">
                 <div class="form-group">
@@ -67,7 +76,7 @@
                     <label for="password">Password:</label>
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
-                <button type="submit" class="btn btn-primary mt-2">Login</button>
+                <button type="submit" class="btn btn-primary mt-2">Join Chat</button>
             </form>
             <p id="msg" style="color: red;"></p>
             <a href="#">Forgot Password?</a>
@@ -75,9 +84,7 @@
 
         <a href="http://localhost:4000/register" class="signup-link">New user? Signup Now</a>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
-        integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"></script>
     <script src="/javascript/user.js"></script>
 </body>
 
