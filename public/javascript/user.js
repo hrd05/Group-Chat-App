@@ -10,8 +10,10 @@ function saveUser(event) {
         .then((response) => {
 
             if(response.status === 201){
-                console.log(response);
-                alert('Signup successfull');
+                // console.log(response);
+                console.log('signup done');
+                // alert('Signup successfull');
+                window.location.href = '/login';
             }
         }
         )
@@ -36,7 +38,7 @@ function loginHandler(event) {
             console.log(response);
             alert('Login successfull');
             localStorage.setItem('token', response.data.token);
-            // window.location.href = '/chat'
+            window.location.href = '/chat'
         }
     })
     .catch(err => {

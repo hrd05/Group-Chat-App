@@ -17,21 +17,24 @@ exports.postUser = (req, res) => {
     User.findOne({ where: { email } })
         .then((user) => {
             if (user) {
-                return res.status(409).json({ message: 'User already exists' });
-            }
-            else {
-                bcrypt.hash(password, 10, (err, hash) => {
-                    User.create({ name, email, phoneNo, password: hash })
-                        .then(() => {
-                            res.redirect('/login');
-
-                        })
-                        .catch(err => {
-                            res.status(400).json({ message: 'something went wrong', Error: err });
-                        })
-                })
+                return res.status(409).end();
+            } else {
+                return;
             }
         })
+    bcrypt.hash(password, 10, (err, hash) => {
+        console.log(err);
+        User.create({ name, email, phoneNo, password: hash })
+            .then(() => {
+                res.status(201).end();
+
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(400).json({ message: 'something went wrong' });
+            })
+    })
+
 };
 
 function generateAcessToken(id) {
@@ -58,7 +61,7 @@ exports.postLogin = async (req, res) => {
         }
     } catch (err) {
         console.log(err);
-        res.status(403).json({ message: 'something went wrong'});
+        res.status(403).json({ message: 'something went wrong' });
     }
 
 }
