@@ -24,7 +24,7 @@ exports.postUser = (req, res) => {
         })
     bcrypt.hash(password, 10, (err, hash) => {
         console.log(err);
-        User.create({ name, email, phoneNo, password: hash })
+        User.create({ name, email, phoneNo, password: hash, isActive: false })
             .then(() => {
                 res.status(201).end();
 
@@ -37,8 +37,8 @@ exports.postUser = (req, res) => {
 
 };
 
-function generateAcessToken(id) {
-    return jwt.sign({ userId: id }, process.env.JWT_SECRET_KEY);
+function generateAcessToken(id, name) {
+    return jwt.sign({ userId: id , userName: name}, process.env.JWT_SECRET_KEY);
 }
 
 
@@ -54,7 +54,8 @@ exports.postLogin = async (req, res) => {
         }
 
         if (result) {
-            res.status(201).json({ message: 'login successfull', token: generateAcessToken(user.id) });
+            await user.update({isActive: true})
+            res.status(201).json({ message: 'login successfull', token: generateAcessToken(user.id, user.name) });
         }
         else {
             res.status(401).json({ message: 'incorrect password' });

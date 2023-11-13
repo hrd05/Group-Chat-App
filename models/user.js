@@ -12,7 +12,7 @@ const User = sequelize.define('users', {
     },
     name: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
     },
     email: {
         type: Sequelize.STRING,
@@ -26,6 +26,10 @@ const User = sequelize.define('users', {
     },
     password: {
         type: Sequelize.STRING,
+        allowNull: false
+    },
+    isActive: {
+        type: Sequelize.BOOLEAN,
         allowNull: false
     }
     

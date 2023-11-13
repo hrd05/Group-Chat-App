@@ -37,3 +37,8 @@ h2{
     cursor: pointer;
   }
   
+  .list-group-item{
+    color:#f9f9f9;
+    background-color: #007BFF;
+    border: none;
+  }
