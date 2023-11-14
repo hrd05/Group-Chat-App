@@ -22,10 +22,12 @@ exports.postMessage = (req, res) => {
 
 exports.getMessages = async (req, res) => {
 
+    const lastmessageid = req.query.lastmessageid;
+    console.log(lastmessageid);
     const token = req.header('Authorization');
 
     const user = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    
+
 
     try {
         const usersActive = await User.findAll({
@@ -39,16 +41,26 @@ exports.getMessages = async (req, res) => {
             userid.push(users.id);
         });
         console.log(userid);
-        Message.findAll({
-            where: Sequelize.and({
-                userId: userid
-            }),
+
+        const queryOptions = {
+            where: {
+                userId: {
+                    [Sequelize.Op.in]: userid
+                }
+            },
             include: [{ model: User, attributes: ['id', 'name'] }],
-            order: [['createdAt']],
-        })
+            order: [['createdAt']]
+        };
+
+        if (lastmessageid !== undefined) {
+            queryOptions.where.messageId = {
+                [Sequelize.Op.gt]: lastmessageid
+            };
+        }
+        Message.findAll(queryOptions)
             .then((messages) => {
                 // console.log(messages)
-                res.status(201).json({ message: messages, user: user});
+                res.status(201).json({ message: messages, user: user });
             })
             .catch(err => {
                 console.log(err);

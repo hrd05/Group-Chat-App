@@ -1,7 +1,5 @@
-console.log('in script file');
+
 const parentElement = document.getElementById('chat-messages');
-
-
 
 function postMessage() {
     const token = localStorage.getItem('token');
@@ -34,22 +32,45 @@ function clearMessages() {
 }
 
 function fetchMessages() {
-    parentElement.removeChild(parentElement.firstChild);
     const token = localStorage.getItem('token');
+    let lastMsgId = undefined;
+    const msg1 = JSON.parse(localStorage.getItem('messages'));
+    console.log(msg1);
+    if (msg1 !== null && msg1.length > 0) {
+        lastMsgId = msg1[msg1.length - 1].messageId;
+    }
 
-    axios.get("http://localhost:4000/chatMessages", { headers: { "Authorization": token } })
+    let totalMsg;
+
+    axios.get(`http://localhost:4000/chatMessages?lastmessageid=${lastMsgId}`, { headers: { "Authorization": token } })
         .then((res) => {
-            clearMessages();
-            console.log(res);
-            const currUser = res.data.user.userName;
-            console.log('curruser', currUser);
-            for (let i = 0; i < res.data.message.length; i++) {
-                const messageUser = res.data.message[i].user.name;
-                if(messageUser === currUser) {
-                    showMessage("You", res.data.message[i].messageText);
+            // clearMessages();
+            // console.log(res);
+            const msg2 = res.data.message;
+            console.log(msg2);
+            if (msg2.length > 0) {
+                if (lastMsgId && lastMsgId !== msg2[msg2.length - 1].messageId) {
+                    totalMsg = [...msg1, ...msg2];
                 }
-                else{
-                    showMessage(messageUser, res.data.message[i].messageText);
+                else {
+                    totalMsg = msg2;
+                }
+            }
+            if(msg2.length === 0 ){
+                totalMsg = msg1;
+            }
+
+            localStorage.setItem('messages', JSON.stringify(totalMsg));
+            const currUser = res.data.user.userName;
+            console.log(totalMsg);
+            // console.log('curruser', currUser);
+            for (let i = 0; i < totalMsg.length; i++) {
+                const messageUser = totalMsg[i].user.name;
+                if (messageUser === currUser) {
+                    showMessage("You", totalMsg[i].messageText);
+                }
+                else {
+                    showMessage(messageUser, totalMsg[i].messageText);
                 }
             }
         })
@@ -60,4 +81,4 @@ function fetchMessages() {
 
 fetchMessages();
 
-setInterval(fetchMessages, 5000);
+// setInterval(fetchMessages, 5000);
