@@ -2,6 +2,10 @@ const bcrypt = require('bcrypt');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const { Op } = require('sequelize');
+
+const Group = require('../models/group');
+
 
 exports.getLogin = (req, res) => {
     res.sendFile(path.join(__dirname, '../', 'views', 'login.html'));
@@ -66,3 +70,58 @@ exports.postLogin = async (req, res) => {
     }
 
 }
+
+exports.getUsers = async(req, res) => { 
+
+    const token = req.header('Authorization');
+    const user = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    
+    try{
+        const users = await User.findAll({
+            where: {
+                id: {
+                    [Op.not]: user.userId
+                }
+            }
+        });
+        res.status(201).json(users);
+    }catch(err) {
+        res.status(500).json('something went wrong');
+    }
+   
+}
+
+exports.createGroup = async(req, res) => {
+
+    const {groupName, groupMembersid, membersNo } = req.body.data;
+
+    const user = req.user;
+
+    try{
+        const createdGroup = await Group.create({
+            name: groupName,
+            memberNo: membersNo
+        })
+
+        groupMembersid.push(user.id);
+
+        const groupMembers = await User.findAll({
+            where: {
+                id: groupMembersid
+            }
+        })
+
+        await createdGroup.addUsers(groupMembers);
+
+        res.status(201).json({group: createdGroup, message: 'group created successfully'});
+
+
+    }catch(err) {
+        res.status(501).json('something went wrong');
+        console.log(err);
+    }
+
+
+    
+    
+};

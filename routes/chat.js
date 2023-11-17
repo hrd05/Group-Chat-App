@@ -6,8 +6,8 @@ const router = express.Router();
 const chatController = require('../controllers/chat');
 const userAuthenticate = require('../middleware/authenticate');
 
-router.get('/chat', (req, res) => {
-    res.sendFile(path.join(__dirname,  '../', 'views', 'chat-app.html'));
+router.get('/user',  (req, res) => {
+    res.sendFile(path.join(__dirname,  '../', 'views', 'main.html'));
 })
 
 router.post('/chat', userAuthenticate.authenticate, chatController.postMessage);

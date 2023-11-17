@@ -6,7 +6,8 @@ const Sequelize = require('sequelize');
 require('dotenv').config();
 
 const User = require('./models/user');
-const Message = require('./models/Message');
+const Message = require('./models/message');
+const Group = require('./models/group');
 
 const sequelize = require('./util/database');
 const userRoute = require('./routes/user');
@@ -24,6 +25,9 @@ app.use(chatRoute);
 
 User.hasMany(Message);
 Message.belongsTo(User);
+
+User.belongsToMany(Group, {through: 'UserGroup'});
+Group.belongsToMany(User, {through: 'UserGroup' });
 
 sequelize.sync()
 .then(() => {

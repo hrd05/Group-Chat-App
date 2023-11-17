@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const authenticate = (req, res, next) => {
+    console.log('in middleware');
     const token = req.header('Authorization');
 
     const user = jwt.verify(token, process.env.JWT_SECRET_KEY);

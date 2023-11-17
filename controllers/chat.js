@@ -1,4 +1,4 @@
-const Message = require('../models/Message');
+const Message = require('../models/message');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const { Op, Sequelize } = require('sequelize');
@@ -70,3 +70,5 @@ exports.getMessages = async (req, res) => {
         console.log(err);
     }
 }
+
+
