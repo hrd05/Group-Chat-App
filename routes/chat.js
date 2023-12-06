@@ -10,8 +10,10 @@ router.get('/user',  (req, res) => {
     res.sendFile(path.join(__dirname,  '../', 'views', 'main.html'));
 })
 
-router.post('/chat', userAuthenticate.authenticate, chatController.postMessage);
+router.post('/user/post-chat', userAuthenticate.authenticate, chatController.postMessage);
 
-router.get('/chatMessages', userAuthenticate.authenticate, chatController.getMessages);
+router.get('/user/get-commonChat', userAuthenticate.authenticate, chatController.getCommonChat);
+
+router.get('/user/get-groupChat', chatController.getGroupChat);
 
 module.exports = router;

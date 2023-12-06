@@ -24,4 +24,12 @@ router.get('/user/get-users', userAuthenticate.authenticate , userController.get
 
 router.post('/user/create-group', userAuthenticate.authenticate, userController.createGroup );
 
+router.get('/user/get-mygroups', userAuthenticate.authenticate,  userController.getGroups);
+
+router.get('/user/get-group', userAuthenticate.authenticate ,userController.getGroupDetail);
+
+router.get('/user/get-group-members', userAuthenticate.authenticate ,userController.getGroupMember);
+
+router.post('/user/update-group', userAuthenticate.authenticate, userController.updateGroup);
+
 module.exports = router;

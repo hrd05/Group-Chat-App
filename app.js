@@ -26,6 +26,9 @@ app.use(chatRoute);
 User.hasMany(Message);
 Message.belongsTo(User);
 
+Group.hasMany(Message);
+Message.belongsTo(Group);
+
 User.belongsToMany(Group, {through: 'UserGroup'});
 Group.belongsToMany(User, {through: 'UserGroup' });
 

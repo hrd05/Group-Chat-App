@@ -17,6 +17,10 @@ const Group = sequelize.define('Group', {
     memberNo: {
         type: Sequelize.INTEGER,
         allowNull: false
+    },
+    adminId: {
+        type: Sequelize.INTEGER,
+        allowNull: false
     }
 });
 

@@ -42,7 +42,7 @@ exports.postUser = (req, res) => {
 };
 
 function generateAcessToken(id, name) {
-    return jwt.sign({ userId: id , userName: name}, process.env.JWT_SECRET_KEY);
+    return jwt.sign({ userId: id, userName: name }, process.env.JWT_SECRET_KEY);
 }
 
 
@@ -58,7 +58,7 @@ exports.postLogin = async (req, res) => {
         }
 
         if (result) {
-            await user.update({isActive: true})
+            await user.update({ isActive: true })
             res.status(201).json({ message: 'login successfull', token: generateAcessToken(user.id, user.name) });
         }
         else {
@@ -71,12 +71,12 @@ exports.postLogin = async (req, res) => {
 
 }
 
-exports.getUsers = async(req, res) => { 
+exports.getUsers = async (req, res) => {
 
     const token = req.header('Authorization');
     const user = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    
-    try{
+
+    try {
         const users = await User.findAll({
             where: {
                 id: {
@@ -85,22 +85,23 @@ exports.getUsers = async(req, res) => {
             }
         });
         res.status(201).json(users);
-    }catch(err) {
+    } catch (err) {
         res.status(500).json('something went wrong');
     }
-   
+
 }
 
-exports.createGroup = async(req, res) => {
+exports.createGroup = async (req, res) => {
 
-    const {groupName, groupMembersid, membersNo } = req.body.data;
+    const { groupName, groupMembersid, membersNo } = req.body.data;
 
     const user = req.user;
 
-    try{
+    try {
         const createdGroup = await Group.create({
             name: groupName,
-            memberNo: membersNo
+            memberNo: membersNo,
+            adminId: user.id
         })
 
         groupMembersid.push(user.id);
@@ -113,15 +114,99 @@ exports.createGroup = async(req, res) => {
 
         await createdGroup.addUsers(groupMembers);
 
-        res.status(201).json({group: createdGroup, message: 'group created successfully'});
+        res.status(201).json({ group: createdGroup, message: 'group created successfully' });
 
 
-    }catch(err) {
+    } catch (err) {
         res.status(501).json('something went wrong');
         console.log(err);
     }
 
 
-    
-    
 };
+
+exports.updateGroup = async (req, res) => {
+    const groupId = req.query.groupId;
+    const user = req.user;
+    const { groupName, groupMembersid, membersNo } = req.body.data;
+
+    try {
+        const group = await Group.findOne({ where: { id: groupId } });
+        const updatedGroup = await group.update({
+            name: groupName,
+            memberNo: membersNo,
+            adminId: user.id
+        })
+
+        groupMembersid.push(user.id);
+
+        const groupMembers = await User.findAll({
+            where: {
+                id: groupMembersid
+            }
+        })
+
+        await updatedGroup.addUsers(groupMembers);
+        res.status(201).json({ group: updatedGroup, message: 'group updated successfully' });
+    }
+    catch (err) {
+        res.status(501);
+        console.log(err);
+    }
+
+}
+
+exports.getGroups = async (req, res) => {
+    const user = req.user;
+
+    try {
+        const userGroups = await user.getGroups()
+        res.status(201).json(userGroups)
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+exports.getGroupDetail = async (req, res) => {
+    const user = req.user;
+    const groupid = req.query.groupid;
+    console.log('group-detail', groupid);
+
+    try {
+        const group = await Group.findOne({ where: { id: groupid } });
+        res.status(201).json({ group, user });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json('Somethinf Went Wrong');
+    }
+
+}
+
+exports.getGroupMember = async (req, res) => {
+    const groupid = req.query.groupid;
+    const user = req.user;
+
+    try {
+        const group = await Group.findOne();
+        const allUsersData = await group.getUsers({
+            where: {
+                id: {
+                    [Op.not]: user.id
+                }
+            }
+        })
+        const users = allUsersData.map((ele) => {
+            return {
+                id: ele.id,
+                name: ele.name
+            }
+        })
+
+        res.status(201).json(users);
+    }
+    catch (err) {
+        console.log(err);
+    }
+
+}
+
