@@ -8,21 +8,23 @@ exports.postMessage = async (req, res) => {
     const { message, groupId } = req.body.data;
     try {
         if (groupId == 0) {
-            await Message.create({
+            const chatMessage = await Message.create({
                 messageText: message,
                 userId: user.id,
             })
+            return res.status(201).json({ message: chatMessage, username: req.user.name });
         }
 
         else {
-            await Message.create({
+            const chatMessage = await Message.create({
                 messageText: message,
                 userId: user.id,
                 GroupId: groupId
             })
+            return res.status(201).json({ message: chatMessage, username: req.user.name });
         }
 
-        return res.status(201).json({ message: message, username: req.user.name });
+
     }
     catch (err) {
         console.log(err)
@@ -90,19 +92,20 @@ exports.getCommonChat = async (req, res) => {
             include: [{ model: User, attributes: ['id', 'name'] }]
         })
 
-        res.status(201).json({messages});
+        res.status(201).json({ messages, userid: user.id });
     }
-    catch(err) {
+    catch (err) {
         console.log(err);
     }
-  
+
 
 }
 
-exports.getGroupChat = async(req, res) => {
+exports.getGroupChat = async (req, res) => {
     const groupid = req.query.groupid;
+    const user = req.user;
     console.log(groupid, 'in groupchat');
-    try{
+    try {
         const messages = await Message.findAll({
             where: {
                 GroupId: groupid
@@ -110,11 +113,11 @@ exports.getGroupChat = async(req, res) => {
             include: [{ model: User, attributes: ['id', 'name'] }]
         })
 
-        res.status(201).json({messages});
+        res.status(201).json({ messages, userid: user.id });
     }
-    catch(err){
+    catch (err) {
         console.log(err);
     }
 
-    
+
 }

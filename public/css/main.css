@@ -1,3 +1,5 @@
+
+
 #chat_container {
     max-height: 400px;
     /* Set a maximum height to control overflow */
@@ -19,6 +21,32 @@
     border-radius: 10px;
 }
 
+
+
 .overflow-y-scroll {
     overflow-y: auto;
 }
+
+/* Style for self messages */
+.self-chat-class {
+    background-color:#ddd;
+    
+    color:#333;
+    
+}
+
+/* Style for other users' messages */
+.chat-class {
+    background-color: #eaeaea;
+    
+    color: #333;
+}
+
+/* Optional: Add more styling as needed */
+.card {
+    border-radius: 10px;
+    /* Rounded corners for all cards */
+    margin-bottom: 10px;
+    /* Adjust as needed */
+}
+

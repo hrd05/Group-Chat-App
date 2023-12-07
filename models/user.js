@@ -32,7 +32,7 @@ const User = sequelize.define('users', {
         type: Sequelize.BOOLEAN,
         allowNull: false
     }
-    
+
 });
 
 module.exports = User;

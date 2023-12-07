@@ -14,6 +14,6 @@ router.post('/user/post-chat', userAuthenticate.authenticate, chatController.pos
 
 router.get('/user/get-commonChat', userAuthenticate.authenticate, chatController.getCommonChat);
 
-router.get('/user/get-groupChat', chatController.getGroupChat);
+router.get('/user/get-groupChat', userAuthenticate.authenticate,chatController.getGroupChat);
 
 module.exports = router;

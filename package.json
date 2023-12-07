@@ -22,8 +22,10 @@
     "express-handlebars": "^3.0.0",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.1",
+    "nodemailer": "^6.9.7",
     "pug": "^2.0.3",
     "razorpay": "^2.9.2",
-    "sequelize": "^6.33.0"
+    "sequelize": "^6.33.0",
+    "uuid": "^9.0.1"
   }
 }

@@ -14,6 +14,10 @@ router.get('/register',  (req, res) => {
     res.sendFile(path.join(__dirname, '../', 'views','signup.html'))
 })
 
+router.get('/password/forgotpassword', (req, res) => {
+    res.sendFile(path.join(__dirname, '../', 'views', 'reset.html'));
+})
+
 router.post('/register', userController.postUser);
 
 router.get('/login', userController.getLogin);
