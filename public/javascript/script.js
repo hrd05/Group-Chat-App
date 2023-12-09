@@ -6,7 +6,7 @@ function postMessage() {
 
     const message = document.getElementById('message-input').value;
 
-    axios.post("http://localhost:4000/chat", { message }, { headers: { "Authorization": token } })
+    axios.post("/chat", { message }, { headers: { "Authorization": token } })
         .then((res) => {
             // console.log(res);
             showMessage('You', res.data.message);
@@ -42,7 +42,7 @@ function fetchMessages() {
 
     let totalMsg;
 
-    axios.get(`http://localhost:4000/chatMessages?lastmessageid=${lastMsgId}`, { headers: { "Authorization": token } })
+    axios.get(`/chatMessages?lastmessageid=${lastMsgId}`, { headers: { "Authorization": token } })
         .then((res) => {
             // clearMessages();
             // console.log(res);
@@ -56,7 +56,7 @@ function fetchMessages() {
                     totalMsg = msg2;
                 }
             }
-            if(msg2.length === 0 ){
+            if (msg2.length === 0) {
                 totalMsg = msg1;
             }
 

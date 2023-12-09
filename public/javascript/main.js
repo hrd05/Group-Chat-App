@@ -1,4 +1,22 @@
-console.log("in main js");
+
+const socket = io();
+
+socket.on('receive-common-message', () => {
+  if (msg_btn.id == 0) {
+    showCommonChats();
+  }
+})
+
+socket.on('receive-group-message', (id) => {
+  if (msg_btn.id == id) {
+    showGroupChats(id)
+  }
+})
+
+
+
+
+
 const token = localStorage.getItem("token");
 const chat_list = document.getElementById("chat_list");
 
@@ -199,6 +217,15 @@ function sendMessage(e) {
                     </div>
                 </div>`;
 
+        if (id == 0) {
+          console.log('id=0', 'emit')
+          socket.emit('commongroup-message');
+        }
+        else {
+          console.log('id=group', 'emit')
+          socket.emit('group-message', id);
+        }
+
         // showChat(message, res.data.username);
         chat_container.scrollTop = chat_container.scrollHeight;
         message_input.value = "";
@@ -261,6 +288,22 @@ function showCommonChats() {
     .catch((err) => console.log(err));
 }
 
+function showGroupChats(groupid) {
+  chat_body.innerHTML = "";
+  axios
+    .get(`/user/get-groupChat?groupid=${groupid}`, {
+      headers: { Authorization: token },
+    })
+    .then((res) => {
+      // console.log(res);
+      const { userid } = res.data;
+
+      showChat(res.data.messages, userid);
+
+    })
+    .catch((err) => console.log(err));
+}
+
 function ShowGroupChat(e) {
   const groupId = e.target.id;
 
@@ -278,9 +321,9 @@ function ShowGroupChat(e) {
         .then((res) => {
           console.log(res);
           const { userid } = res.data;
-          for (let i = 0; i < res.data.messages.length; i++) {
-            showChat(res.data.messages, userid);
-          }
+
+          showChat(res.data.messages, userid);
+
         })
         .catch((err) => console.log(err));
     }
@@ -305,8 +348,8 @@ function setupGroup(groupId) {
         // console.log(res);
         const { group } = res.data;
         const { user } = res.data;
-        console.log(group);
-        console.log(user.id);
+        // console.log(group);
+        // console.log(user.id);
         group_heading.innerHTML = `${group.name} `;
         group_members.innerHTML = `${group.memberNo} Members`;
         msg_btn.id = groupId;

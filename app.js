@@ -2,6 +2,8 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
+const http = require('http');
+const { Server } = require('socket.io');
 
 require('dotenv').config();
 
@@ -15,6 +17,23 @@ const userRoute = require('./routes/user');
 const chatRoute = require('./routes/chat');
 const resetRoute = require('./routes/reset');
 const app = express();
+
+const server = http.createServer(app);
+const io = new Server(server);
+
+io.on('connection', (socket) => {
+    console.log('user connected', Math.random());
+    socket.on('commongroup-message', () => {
+        console.log('msg receive');
+        socket.broadcast.emit('receive-common-message', 'new message received')
+    })
+
+    socket.on('group-message', (id) => {
+        console.log('groupmsg receive', id)
+        socket.broadcast.emit('receive-group-message', id)
+    })
+
+})
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -39,9 +58,11 @@ Forgotpassword.belongsTo(User);
 User.belongsToMany(Group, { through: 'UserGroup' });
 Group.belongsToMany(User, { through: 'UserGroup' });
 
+
+
 sequelize.sync()
     .then(() => {
-        app.listen(4000);
+        server.listen(4000);
     })
 
 
