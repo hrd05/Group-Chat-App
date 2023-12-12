@@ -22,7 +22,7 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 io.on('connection', (socket) => {
-    console.log('user connected', Math.random());
+    // console.log('user connected', Math.random());
     socket.on('commongroup-message', () => {
         console.log('msg receive');
         socket.broadcast.emit('receive-common-message', 'new message received')
@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(userRoute);

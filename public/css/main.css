@@ -13,6 +13,19 @@
     margin: 0;
 }
 
+i{
+    margin: 0 5px;
+    font-size: 24px;
+    color: white;
+    /* background-color: #00BFFF; */
+    /* border: black; */
+    padding: 5px;
+    /* border-style: solid; */
+}
+i:hover{
+    cursor: pointer;
+}
+
 .list-group-item {
     background-color: #f8f9fa;
     border: 1px solid #ddd;
@@ -50,3 +63,8 @@
     /* Adjust as needed */
 }
 
+.chat-image{
+    height: 10rem;
+    width: 14rem;
+    object-fit: cover;
+}

@@ -9,6 +9,10 @@ const Message = sequelize.define('Message', {
         autoIncrement: true,
         primaryKey: true
     },
+    isImage: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    },
 
     messageText: {
         type: Sequelize.TEXT,

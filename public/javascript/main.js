@@ -24,6 +24,13 @@ const chat_list = document.getElementById("chat_list");
 const msg_btn = message_form.querySelector('input[type="submit"]');
 const group_editbtn = group_headContainer.querySelector('input[type="submit"]');
 
+const formElements = {
+  messageInput: message_form.querySelector('input[name="Message"]'),
+  flexSwitch: message_form.querySelector('#flexSwitch'),
+  flexLabel: message_form.querySelector('label'),
+  flexInput: message_form.querySelector('#flexInput')
+}
+
 const modelElements = {
   groupName: group_model.querySelector('input[name="group_name"]'),
   editStatus: group_model.querySelector('input[name="edit_status"]'),
@@ -34,6 +41,20 @@ group_body.addEventListener("click", ShowGroupChat);
 model_submitbtn.addEventListener("click", createGroup);
 group_editbtn.addEventListener("click", showingGroupDetails);
 msg_btn.addEventListener("click", sendMessage);
+
+formElements.flexSwitch.addEventListener('change', () => {
+  // console.log('changed');
+  if (formElements.flexLabel.textContent === "text") {
+    formElements.flexLabel.textContent = 'image';
+    formElements.flexInput.type = 'file';
+    formElements.flexInput.setAttribute('accept', 'image/*');
+  }
+  else {
+    formElements.flexLabel.textContent = 'text';
+    formElements.flexInput.type = 'text';
+    formElements.flexInput.removeAttribute('accept');
+  }
+})
 
 async function showAllUsers() {
   try {
@@ -182,57 +203,59 @@ async function ShowGroup() {
   }
 }
 
-function sendMessage(e) {
-  e.preventDefault();
-  if (e.target) {
-    const id = e.target.id;
-    const msg = message_input.value;
-    const data = {
-      message: msg,
-      groupId: id,
-    };
-    // console.log(data);
-    axios
-      .post("/user/post-chat", { data }, { headers: { Authorization: token } })
-      .then((res) => {
-        // console.log('success');
-        console.log(res);
-        const { message } = res.data;
-        const { username } = res.data;
-        const date = new Date(message.createdAt);
-        const options = {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        };
-        const formattedDate = date.toLocaleString("en-US", options);
-        chat_body.innerHTML += `
-                    <div class="col-12 mb-2 pe-0">
-                    <div class="card p-2 float-end rounded-4 self-chat-class">
-                        <p class="text-primary my-0"><small>${username}</small></p>
-                        <p class="my-0">${message.messageText}</p>
-                        <small class="text-muted text-end">${formattedDate}</small>
-                    </div>
-                </div>`;
+async function sendMessage(e) {
+  try {
+    // console.log()
+    if (e.target) {
+      e.preventDefault();
+      const id = e.target.id;
+      const msg = formElements.messageInput.value;
+      const data = {
+        message: msg,
+        groupId: id,
+      };
 
-        if (id == 0) {
-          console.log('id=0', 'emit')
-          socket.emit('commongroup-message');
-        }
-        else {
-          console.log('id=group', 'emit')
-          socket.emit('group-message', id);
+      // console.log(data);
+      if (formElements.flexLabel.textContent === "text") {
+        await axios.post("/user/post-chat", { data }, { headers: { Authorization: token } })
+      }
+      else {
+        console.log('post image');
+        const file = formElements.messageInput.files[0];
+        if (file) {
+          console.log(file);
+          // const formData = new FormData()
+          // formData.append('image', file);
+          // formData.append('groupId', id);
+          const formData = new FormData();
+          formData.append('image', file);
+          formData.append('groupId', id);
+
+          const imageResponse = await axios.post(`/user/post-image`, formData, { headers: { Authorization: token } });
+          // console.log(imageResponse.data);
         }
 
-        // showChat(message, res.data.username);
-        chat_container.scrollTop = chat_container.scrollHeight;
-        message_input.value = "";
-      })
-      .catch((err) => console.log(err));
+      }
+      formElements.messageInput.value = "";
+
+      if (id == 0) {
+        socket.emit('commongroup-message');
+        showCommonChats();
+      }
+      else {
+        socket.emit('group-message', id);
+        showGroupChats(id);
+      }
+
+      // showChat(message, res.data.username);
+      chat_container.scrollTop = chat_container.scrollHeight;
+    }
+  }
+  catch (err) {
+    console.log(err);
   }
 }
+
 
 function showChat(messages, userid) {
   chat_body.innerHTML = "";
@@ -250,23 +273,54 @@ function showChat(messages, userid) {
     const formattedDate = date.toLocaleString("en-US", options);
 
     if (ele.userId == userid) {
-      messageText += `
-                    <div class="col-12 mb-2 pe-0">
-                        <div class="card p-2 float-end rounded-4 self-chat-class">
-                            <p class="text-primary my-0"><small>${ele.user.name}</small></p>
-                            <p class="my-0">${ele.messageText}</p>
-                            <small class="text-muted text-end">${formattedDate}</small>
-                        </div>
-                    </div >`;
-    } else {
-      messageText += `
-            <div class="col-12 mb-2 pe-0" >
-                    <div class="card p-2 float-start rounded-4 chat-class">
-                        <p class="text-danger my-0"><small>${ele.user.name}</small></p>
-                        <p class="my-0">${ele.messageText}</p>
-                        <small class="text-muted">${formattedDate}</small>
-                    </div>
-            </div >`;
+      if (ele.isImage) {
+        messageText += `      
+        <div class="col-12 mb-2 pe-0">
+            <div class="card p-2 float-end rounded-4 self-chat-class">
+                <p class="text-primary my-0"><small>${ele.user.name}</small></p>
+                <a href="${ele.messageText}" target="_blank">
+                  <img src="${ele.messageText}" class="chat-image">
+                </a>
+                <small class="text-muted text-end">${formattedDate}</small>
+            </div>
+        </div>
+            `
+      }
+      else {
+        messageText += `
+        <div class="col-12 mb-2 pe-0">
+            <div class="card p-2 float-end rounded-4 self-chat-class">
+                <p class="text-primary my-0"><small>${ele.user.name}</small></p>
+                <p class="my-0">${ele.messageText}</p>
+                <small class="text-muted text-end">${formattedDate}</small>
+            </div>
+        </div >`;
+      }
+
+    }
+    else {
+      if (ele.isImage) {
+        messageText += `                            
+        <div class="col-12 mb-2 pe-0">
+            <div class="card p-2 float-start rounded-4 chat-class">
+                <p class="text-danger my-0"><small>${ele.user.name}</small></p>
+                <a href="${ele.messageText}" target="_blank">
+                <img src="${ele.messageText}" class="chat-image">
+              </a>
+                <small class="text-muted">${formattedDate}</small>
+            </div>
+        </div>`
+
+      } else {
+        messageText += `                            
+        <div class="col-12 mb-2 pe-0">
+            <div class="card p-2 float-start rounded-4 chat-class">
+                <p class="text-danger my-0"><small>${ele.user.name}</small></p>
+                <p class="my-0">${ele.messageText}</p>
+                <small class="text-muted">${formattedDate}</small>
+            </div>
+        </div>`
+      }
     }
   });
 
@@ -281,9 +335,7 @@ function showCommonChats() {
       console.log(res);
       const { userid } = res.data;
       console.log(userid);
-      for (let i = 0; i < res.data.messages.length; i++) {
-        showChat(res.data.messages, userid);
-      }
+      showChat(res.data.messages, userid);
     })
     .catch((err) => console.log(err));
 }
