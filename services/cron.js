@@ -3,7 +3,7 @@ const { Op } = require('sequelize');
 const ArchiveChat = require('../models/archive-chat');
 const Message = require('../models/message');
 
-exports.job = new CronJob('0 0 * * *',
+exports.job = new CronJob('* * * * *',
     function () {
         archiveOldChats();
     },
@@ -16,7 +16,7 @@ async function archiveOldChats() {
     try {
         console.log('working');
         const date = new Date();
-        date.setDate(date.getDate() - 1);
+        date.setDate(date.getDate() - 10);
         console.log(date);
 
         const chatsToArchive = await Message.findAll({
