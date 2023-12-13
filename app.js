@@ -12,10 +12,13 @@ const Message = require('./models/message');
 const Group = require('./models/group');
 const Forgotpassword = require('./models/forgot-pass');
 
+
 const sequelize = require('./util/database');
 const userRoute = require('./routes/user');
 const chatRoute = require('./routes/chat');
 const resetRoute = require('./routes/reset');
+const cronService = require('./services/cron');
+cronService.job.start();
 const app = express();
 
 const server = http.createServer(app);
