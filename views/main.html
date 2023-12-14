@@ -32,7 +32,8 @@
                         <a href="#profile" class="nav-link">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#logout" class="nav-link ">Log Out</a>
+                        <a href="/logout" data-bs-toggle="modal" data-bs-target="#logout_model"
+                            aria-controls="logout_model" id="loginbtn" class="nav-link ">Log Out</a>
                     </li>
                 </ul>
             </div>
@@ -135,6 +136,32 @@
                 <!--  -->
             </div>
         </div>
+    </div>
+
+    <!-- Logout Modal -->
+    <!-- <div id="logout_model" class="modal">
+        <div class="modal-dialog modal-dialog-centered ">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-center">
+                    <h1 class="modal-title fs-5" id="model_heading">Logout Confirmation </h1>
+                </div>
+
+            </div>
+        </div> -->
+    <div tabindex="-1" id="logout_model" class="modal bs-example-modal-sm" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Logout</h4>
+                </div>
+                <div class="modal-body">Are you sure you want to log-off?
+                </div>
+                <div class="modal-footer"><a class="btn btn-primary btn-block" id="logoutbtn" href="#">Logout</a></div>
+            </div>
+        </div>
+    </div>
+
+
     </div>
 
 

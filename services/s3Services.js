@@ -4,9 +4,6 @@ const accessKey = process.env.AWS_ACCESS_KEY;
 const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 const bucketName = process.env.BUCKET_NAME;
 
-console.log(accessKey, secretAccessKey);
-
-// AWS.config.update({ region: 'ap-south-1' });
 
 // let s3 = new AWS.S3({
 //     accessKey: accessKey,

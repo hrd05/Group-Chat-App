@@ -23,6 +23,7 @@ const chat_list = document.getElementById("chat_list");
 // const btn = create_groupBtn;
 const msg_btn = message_form.querySelector('input[type="submit"]');
 const group_editbtn = group_headContainer.querySelector('input[type="submit"]');
+const logoutbtn = document.getElementById('logoutbtn');
 
 const formElements = {
   messageInput: message_form.querySelector('input[name="Message"]'),
@@ -41,6 +42,7 @@ group_body.addEventListener("click", ShowGroupChat);
 model_submitbtn.addEventListener("click", createGroup);
 group_editbtn.addEventListener("click", showingGroupDetails);
 msg_btn.addEventListener("click", sendMessage);
+logoutbtn.addEventListener("click", logoutUser);
 
 formElements.flexSwitch.addEventListener('change', () => {
   // console.log('changed');
@@ -413,6 +415,13 @@ function setupGroup(groupId) {
       .catch((err) => console.log(err));
   }
 }
+
+function logoutUser() {
+  localStorage.removeItem("token");
+  window.location.href = "/"
+}
+
+
 
 ShowGroup();
 showCommonChats();

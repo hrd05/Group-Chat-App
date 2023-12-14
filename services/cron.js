@@ -3,7 +3,7 @@ const { Op } = require('sequelize');
 const ArchiveChat = require('../models/archive-chat');
 const Message = require('../models/message');
 
-exports.job = new CronJob('* * * * *',
+exports.job = new CronJob('0 0 * * *',
     function () {
         archiveOldChats();
     },
